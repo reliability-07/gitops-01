@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: practice-app
+  labels:
+    app: practice-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: practice-app
+  template:
+    metadata:
+      labels:
+        app: practice-app
+      annotations:
+        # This tells the Datadog Agent to collect logs from this pod
+        ad.datadoghq.com/practice-app.logs: '[{"source":"python","service":"practice-app"}]'
+    spec:
+      containers:
+      - name: practice-app
+        image: ghcr.io/reliability-07/practice-app:initial
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DD_ENV
+          value: "practice"
+        - name: DD_SERVICE
+          value: "practice-app"
+        - name: DD_VERSION
+          value: "1.0"
